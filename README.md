@@ -20,9 +20,9 @@ var t = getText;
         function Price() {
             return [b('content')
                 , [b('column', '-a')
-                    , [b('header', '-advantages')
-                        , t('premiumAdvantages.title')
-                    ]
+                    , [b('header', '-advantages')        // <div className={b('header', '-advantages')}>
+                        , t('premiumAdvantages.title')   //     {t('premiumAdvantages.title')}
+                    ]                                    //  </div>
                     , [{
                         class: cmps.PremiumAdvantages,
                         mix: b('advantages'),
