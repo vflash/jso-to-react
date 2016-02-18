@@ -1,6 +1,6 @@
 {
-    "version": "0.1.0",
-    "name": "jsoToReact",
+    "version": "0.1.1",
+    "name": "jso-to-react",
     "description": "json to react.js",
     "keywords": [
         "reactjs",

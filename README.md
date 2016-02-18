@@ -6,7 +6,7 @@ jsoToReact
 Пример использования
 --------------------------------------
 ```js
-var jsoToReact = require('jsoToReact');
+var jsoToReact = require('jso-to-react');
 var bem = require('bem-name');
 
 var jr = jsoToReact;
