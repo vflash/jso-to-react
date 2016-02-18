@@ -1,0 +1,30 @@
+{
+    "version": "0.1.0",
+    "name": "jsoToReact",
+    "description": "json to react.js",
+    "keywords": [
+        "reactjs",
+        "jso",
+        "js"
+    ],
+    "main": "./jsoToReact.js",
+    "homepage": "https://github.com/vflash/jsoToReact",
+    "bugs": {
+        "url": "https://github.com/vflash/jsoToReact/issues"
+    },
+    "author": {
+        "name": "Vopilovskiy Konstantin",
+        "email": "flash.vkv@gmail.com",
+        "url": "http://vflash.ru"
+    },
+
+    "files": [
+        "LICENSE",
+        "README.md",
+        "jsoToReact.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/vflash/jsoToReact.git"
+    }
+}
