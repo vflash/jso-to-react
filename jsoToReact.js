@@ -177,7 +177,7 @@ function tagCSS(str, props) {
     var j = findIndexPoint(str);
     if (j !== -1) {
         props.className = str.substr(j + 1);
-        return str.substr(1, j);
+        return str.substring(1, j);
     };
 
     return str.substr(1);
