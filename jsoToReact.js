@@ -32,7 +32,7 @@ function jsoToReact(jso) {
     };
 
     if (typeof elem === 'function') {
-        return create(jso, type, null);
+        return createElement.apply(null, jso);
     };
 
     return elemToReact(elem, jso);
