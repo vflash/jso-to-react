@@ -3,6 +3,26 @@ jsoToReact
 для записи шаблонов не использая jsx используется формат описания jso
 формат полносью совместим с js, имеет более компактный вид чем jsx
 
+Ключевые моменты
+--------------------------------------
+```js
+b('title') -->  "block__title"
+b('+i.title') -->  "+i.block__title"
+Icon  -->  какойто конструктор компоненты 
+
+[b('title'), "Bla bla"]  --> <div className={b('title')}>Bla bla</div>
+[b('+i.title'), "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
+[{class: b('title')}, "Bla bla"]  --> <div className={b('title')}>Bla bla</div>
+[{class: b('+i.title')}, "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
+[{tag: 'i', class: b('title')}, "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
+[{class: Icon, name: 'edit'}]  --> <Icon name={b('title')}/>
+[Icon, {name: 'edit'}]  --> <Icon name={b('title')}/>
+
+[null, x1, x2, ..]  --> [<x1>, <x2>, ..] // список в формате jso
+[1, <x>] --> <x> // если нужно вставить значение как оно есть
+
+```
+
 Пример использования
 --------------------------------------
 ```js
