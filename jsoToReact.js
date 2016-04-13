@@ -23,16 +23,16 @@ function jsoToReact(jso) {
         if (elem) {
             if (elem.charCodeAt(0) === 43) {
                 var props = {};
-                return create(jso, tagCSS(elem, props), props);
+                return create(tagCSS(elem, props), props, jso, 1);
             };
-            return create(jso, 'div', {className: elem});
+            return create('div', {className: elem}, jso, 1);
         };
 
-        return create(jso, 'div', null);
+        return create('div', null, jso, 1);
     };
 
     if (typeof elem === 'function') {
-        return createElement.apply(null, jso);
+        return create(elem._rclass || elem, jso[1], jso, 2);
     };
 
     return elemToReact(elem, jso);
@@ -54,7 +54,7 @@ function elemToReact(elem, jso) {
             props[prop] = elem[prop];
         };
 
-        return create(jso, type, props);
+        return create(type, props, jso, 1);
     };
 
 
@@ -80,19 +80,19 @@ function elemToReact(elem, jso) {
         props[prop] = elem[prop];
     };
 
-    return create(jso, type || 'div', props);
+    return create(type || 'div', props, jso, 1);
 };
 
-function create(jso, type, props) {
-    return (jso && jso.length > 1
-        ? createElement.apply(null, pushChilds([type, props], jso))
-        : createElement.call(null, type, props)
+function create(type, props, jso, childIndex) {
+    return (jso && jso.length > childIndex
+        ? createElement.apply(null, pushChilds([type, props], jso, childIndex))
+        : createElement(type, props)
     );
 };
 
-function pushChilds(list, jso) {
+function pushChilds(list, jso, startIndex) {
     var length = jso.length;
-    var i = 1;
+    var i = startIndex || 1;
 
     while(i < length) {
         var x = jso[i++];
@@ -110,7 +110,7 @@ function pushChilds(list, jso) {
             if (!!x[0]) {
                 list.push(jsoToReact(x));
             } else {
-                list.push(pushChilds([], x));
+                list.push(pushChilds([], x, 1));
             };
             continue;
         };
