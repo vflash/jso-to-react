@@ -6,7 +6,13 @@ var isArray = Array.isArray;
 
 module.exports = jsoToReact;
 jsoToReact.children = jsoChildren;
+jsoToReact.mapReverse = jsoMapReverse;
 jsoToReact.map = jsoMap;
+jsoToReact.r = function(fn) {
+    return function render() {
+        return jsoToReact(fn.apply(this, arguments));
+    };
+};
 
 
 function jsoToReact(jso) {
@@ -126,6 +132,11 @@ function pushChilds(list, jso, startIndex) {
     return list;
 };
 
+
+function jsoMapReverse(list, fn) {
+    var m = list.map(fn); m.push(null);
+    return m.reverse()
+};
 
 function jsoMap(list, fn) {
     if (!list || !list.length) {
