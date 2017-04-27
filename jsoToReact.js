@@ -19,12 +19,6 @@ function jsoToReact(jso) {
     var elem = jso[0];
     var key;
 
-    if (!elem) return null;
-
-    if (elem === 1) {
-        return jso[1];
-    };
-
     if (typeof elem === 'string') {
         if (elem) {
             if (elem.charCodeAt(0) === 43) {
@@ -38,7 +32,15 @@ function jsoToReact(jso) {
     };
 
     if (typeof elem === 'function') {
-        return create(elem._rclass || elem, jso[1], jso, 2);
+        return create(elem, null, jso, 1);
+    };
+
+    if (elem === 1) {
+        return jso[1];
+    };
+
+    if (!elem) {
+        return null;
     };
 
     return elemToReact(elem, jso);
@@ -50,7 +52,7 @@ function elemToReact(elem, jso) {
 
     if (typeof classType === 'function') {
         var props = {};
-        var type = classType._rclass || classType;
+        var type = classType;
 
         for (var prop in elem) {
             if (prop === 'class') {
@@ -134,12 +136,14 @@ function pushChilds(list, jso, startIndex) {
 
 
 function jsoMapReverse(list, fn) {
-    var m = list.map(fn); m.push(null);
-    return m.reverse()
+    var m = [].concat(list);
+    m.reverse();
+
+    return jsoMap(m, fn);
 };
 
 function jsoMap(list, fn) {
-    if (!list || !list.length) {
+    if (!list) {
         return null;
     };
 
@@ -148,13 +152,15 @@ function jsoMap(list, fn) {
         return null;
     };
 
-    var m = [null], i = 0;
-    m.length = len + 1;
+    var m = [null];
+    var i = 0;
+
+    function push(value) {
+        return m.push(value);
+    };
 
     for(; i < len; i++) {
-        if (i in list) {
-            m[i + 1] = fn(list[i], i);
-        };
+        m.push(fn(list[i], i, push));
     };
 
     return m;
@@ -180,6 +186,7 @@ function tagName(str, props) {
 };
 
 function tagCSS(str, props) {
+    if (str === '+button') return 'button';
     if (str === '+span') return 'span';
     if (str === '+p') return 'p';
     if (str === '+b') return 'b';

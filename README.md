@@ -16,7 +16,7 @@ Icon  -->  какойто конструктор компоненты
 [{class: b('+i.title')}, "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
 [{tag: 'i', class: b('title')}, "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
 [{class: Icon, name: 'edit'}]  --> <Icon name={b('title')}/>
-[Icon, {name: 'edit'}]  --> <Icon name={b('title')}/>
+[Icon, "Bla Bla Bla"]  --> <Icon>Bla Bla Bla</Icon>
 
 [null, x1, x2, ..]  --> [<x1>, <x2>, ..] // список в формате jso
 [1, <x>] --> <x> // если нужно вставить значение как оно есть
