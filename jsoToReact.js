@@ -115,7 +115,7 @@ function pushChilds(list, jso, startIndex) {
         };
 
         if (isArray(x)) {
-            if (!!x[0]) {
+            if (!!x[0] || x[0] === '') {
                 list.push(jsoToReact(x));
             } else {
                 list.push(pushChilds([], x, 1));
