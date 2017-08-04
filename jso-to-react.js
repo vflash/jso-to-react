@@ -1,21 +1,37 @@
 'use strict';
 var React = require('react');
 
+var isValidElement = React.isValidElement;
 var createElement = React.createElement;
+var arraySlice = Array.prototype.slice;
+var toArray = React.Children.toArray;
 var isArray = Array.isArray;
 
+
 module.exports = jsoToReact;
-jsoToReact.children = jsoChildren;
+
 jsoToReact.mapReverse = jsoMapReverse;
+jsoToReact.children = jsoChildren; // jr.children(this) | jr.children(this, 'row', true|false)
+jsoToReact.childs = childs; // jr.childs(this, 'row', true) вернет группы потомков с меткой '--> row <--'
+jsoToReact.toRact = jso2react;
 jsoToReact.map = jsoMap;
 jsoToReact.r = function(fn) {
     return function render() {
-        return jsoToReact(fn.apply(this, arguments));
+        var jso = fn.apply(this, arguments);
+        if (isValidElement(jso)) {
+            return jso;
+        };
+
+        return jso2react(jso);
     };
 };
 
-
 function jsoToReact(jso) {
+    return jso2react(arraySlice.call(arguments));
+};
+
+
+function jso2react(jso) {
     var elem = jso[0];
     var key;
 
@@ -107,6 +123,7 @@ function pushChilds(list, jso, startIndex) {
 
         if (x === 0 || x === '') {
             list.push(x);
+            continue;
         };
 
         if (!x || x === true) {
@@ -115,15 +132,28 @@ function pushChilds(list, jso, startIndex) {
         };
 
         if (isArray(x)) {
-            if (!!x[0] || x[0] === '') {
-                list.push(jsoToReact(x));
-            } else {
-                list.push(pushChilds([], x, 1));
+            var jsoType = x[0];
+
+            if (jsoType === 11) { // FRAGMENT
+                pushChilds(list, x, 1)
+                continue;
             };
+
+            if (!!jsoType || jsoType === '') {
+                list.push(jso2react(x));
+                continue;
+            };
+
+            list.push(pushChilds([], x, 1));
             continue;
         };
 
         if (typeof x === 'object') {
+            if (isValidElement(x)) {
+                list.push(x);
+                continue;
+            };
+
             list.push(elemToReact(x));
             continue;
         };
@@ -160,14 +190,10 @@ function jsoMap(list, fn) {
     };
 
     for(; i < len; i++) {
-        m.push(fn(list[i], i, push));
+        m.push(fn(list[i], i, push, list));
     };
 
     return m;
-};
-
-function jsoChildren(self) {
-    return [1, self.props.children];
 };
 
 
@@ -212,5 +238,80 @@ function findIndexPoint(s) {
     };
 
     return -1;
+};
+
+function jsoChildren(self, tag, isDefaultTag) {
+    var children = self.props.children;
+
+    if (!tag || children == null) {
+        return [1, children];
+    };
+
+    var children = isArray(children) ? children : [children];
+    var isPush = !!isDefaultTag;
+    var xtag;
+    var res = [];
+    var l = children.length;
+    var i = 0;
+
+    for (; i < l; i++) {
+        var child = children[i];
+
+        if (typeof child === 'string') {
+            if (xtag = child.match(/^-->>\s+([-\w]+)\s+<<--$/)) {
+                isPush = xtag[1] === tag;
+                continue;
+            };
+        };
+
+        if (isPush) {
+            res.push(child);
+        };
+    };
+
+    return res.length ? [1, res] : null;
+};
+
+function childs(self, tag, isDefaultTag) {
+    var children = self.props.children;
+    if (children == null) {
+        return [];
+    };
+
+    var children = toArray(self.props.children);
+    if (!children.length) {
+        return [];
+    };
+
+    var isPush = !!isDefaultTag;
+    var childs = [];
+    var xtag;
+    var res;
+    var l = children.length;
+    var i = 0;
+
+    if (isPush) {
+        childs.push(res = [1]);
+    };
+
+    for (; i < l; i++) {
+        var child = children[i];
+
+        if (typeof child === 'string') {
+            if (xtag = child.match(/^-->>\s([-\w]+|\!+)\s<<--$/)) {
+                isPush = xtag[1] === tag;
+                if (isPush) {
+                    childs.push(res = [1]);
+                };
+                continue;
+            };
+        };
+
+        if (isPush) {
+            res.push(child);
+        };
+    };
+
+    return childs;
 };
 

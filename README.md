@@ -8,7 +8,7 @@ jsoToReact
 ```js
 b('title') -->  "block__title"
 b('+i.title') -->  "+i.block__title"
-Icon  -->  какойто конструктор компоненты 
+Icon  -->  какойто конструктор компоненты
 
 [b('title'), "Bla bla"]  --> <div className={b('title')}>Bla bla</div>
 [b('+i.title'), "Bla bla"]  --> <i className={b('title')}>Bla bla</i>
@@ -34,7 +34,7 @@ var b = bem('page-buy-vip-price');
 var t = getText;
 
 {
-    render: function() {
+    render: jr.r(function() {
         ...
 
         function Price() {
@@ -65,7 +65,7 @@ var t = getText;
             ];
         };
 
-        return jr([
+        return [
             {
                 class: cmps.PaymentPage,
                 tabs: this.props.tabs,
@@ -91,8 +91,8 @@ var t = getText;
             )
 
             , jr.children(this) // {this.props.children}
-        ]);
-    },
+        ];
+    }),
 }
 
 ```
