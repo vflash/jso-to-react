@@ -18,11 +18,10 @@ jsoToReact.map = jsoMap;
 jsoToReact.r = function(fn) {
     return function render() {
         var jso = fn.apply(this, arguments);
-        if (isValidElement(jso)) {
-            return jso;
-        };
-
-        return jso2react(jso);
+        return (isArray(jso)
+            ? jso2react(jso)
+            : jso
+        );
     };
 };
 
@@ -39,16 +38,16 @@ function jso2react(jso) {
         if (elem) {
             if (elem.charCodeAt(0) === 43) {
                 var props = {};
-                return create(tagCSS(elem, props), props, jso, 1);
+                return create(tagCSS(elem, props), props, jso);
             };
-            return create('div', {className: elem}, jso, 1);
+            return create('div', {className: elem}, jso);
         };
 
-        return create('div', null, jso, 1);
+        return create('div', null, jso);
     };
 
     if (typeof elem === 'function') {
-        return create(elem, null, jso, 1);
+        return create(elem, null, jso);
     };
 
     if (elem === 1) {
@@ -56,7 +55,7 @@ function jso2react(jso) {
     };
 
     if (!elem) {
-        return null;
+        return pushChilds([], jso);
     };
 
     return elemToReact(elem, jso);
@@ -78,7 +77,7 @@ function elemToReact(elem, jso) {
             props[prop] = elem[prop];
         };
 
-        return create(type, props, jso, 1);
+        return create(type, props, jso);
     };
 
 
@@ -104,19 +103,19 @@ function elemToReact(elem, jso) {
         props[prop] = elem[prop];
     };
 
-    return create(type || 'div', props, jso, 1);
+    return create(type || 'div', props, jso);
 };
 
-function create(type, props, jso, childIndex) {
-    return (jso && jso.length > childIndex
-        ? createElement.apply(null, pushChilds([type, props], jso, childIndex))
+function create(type, props, jso) {
+    return (jso && jso.length > 1
+        ? createElement.apply(null, pushChilds([type, props], jso))
         : createElement(type, props)
     );
 };
 
-function pushChilds(list, jso, startIndex) {
+function pushChilds(list, jso) {
     var length = jso.length;
-    var i = startIndex || 1;
+    var i = 1;
 
     while(i < length) {
         var x = jso[i++];
@@ -135,7 +134,7 @@ function pushChilds(list, jso, startIndex) {
             var jsoType = x[0];
 
             if (jsoType === 11) { // FRAGMENT
-                pushChilds(list, x, 1)
+                pushChilds(list, x)
                 continue;
             };
 
@@ -144,7 +143,7 @@ function pushChilds(list, jso, startIndex) {
                 continue;
             };
 
-            list.push(pushChilds([], x, 1));
+            list.push(pushChilds([], x));
             continue;
         };
 
