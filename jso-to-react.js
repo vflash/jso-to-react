@@ -3,6 +3,7 @@ var React = require('react');
 
 var isValidElement = React.isValidElement;
 var createElement = React.createElement;
+var reactFragment = React.Fragment;
 var arraySlice = Array.prototype.slice;
 var toArray = React.Children.toArray;
 var isArray = Array.isArray;
@@ -29,7 +30,6 @@ function jsoToReact(jso) {
     return jso2react(arraySlice.call(arguments));
 };
 
-
 function jso2react(jso) {
     var elem = jso[0];
     var key;
@@ -46,7 +46,7 @@ function jso2react(jso) {
         return create('div', null, jso);
     };
 
-    if (typeof elem === 'function') {
+    if (typeof elem === 'function' || elem === reactFragment) {
         return create(elem, null, jso);
     };
 
@@ -132,11 +132,6 @@ function pushChilds(list, jso) {
 
         if (isArray(x)) {
             var jsoType = x[0];
-
-            if (jsoType === 11) { // FRAGMENT
-                pushChilds(list, x)
-                continue;
-            };
 
             if (!!jsoType || jsoType === '') {
                 list.push(jso2react(x));
