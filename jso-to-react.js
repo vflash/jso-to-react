@@ -13,8 +13,8 @@ module.exports = jsoToReact;
 
 jsoToReact.mapReverse = jsoMapReverse;
 jsoToReact.children = jsoChildren; // jr.children(this) | jr.children(this, 'row', true|false)
+jsoToReact.toReact = jso2react;
 jsoToReact.childs = childs; // jr.childs(this, 'row', true) вернет группы потомков с меткой '--> row <--'
-jsoToReact.toRact = jso2react;
 jsoToReact.map = jsoMap;
 jsoToReact.r = function(fn) {
     return function render() {
@@ -65,7 +65,7 @@ function jso2react(jso) {
 function elemToReact(elem, jso) {
     var classType = elem.class;
 
-    if (typeof classType === 'function') {
+    if (classType === reactFragment || typeof classType === 'function') {
         var props = {};
         var type = classType;
 
